@@ -113,9 +113,15 @@ export function createConsentBanner(primaryColor, secondaryColor) {
 
   card.append(headingText, text, acceptBtn, denyBtn);
 
+
+  const cssLink = document.createElement("link")
+  cssLink.src = "https://abdulroqib123.github.io/consent-component/consent.css";
+  cssLink.rel = "stylesheet"
+
+  document.head.append(cssLink);
   document.body.append(card);
 }
 
 function loadAnalytics(tagId) {
-  console.log("Analytics loaded");
+  console.log("Analytics loaded", tagId);
 }
