@@ -115,7 +115,7 @@ export function createConsentBanner(primaryColor, secondaryColor) {
 
 
   const cssLink = document.createElement("link")
-  cssLink.src = "https://abdulroqib123.github.io/consent-component/consent.css";
+  cssLink.href = "https://abdulroqib123.github.io/consent-component/consent.css";
   cssLink.rel = "stylesheet"
 
   document.head.append(cssLink);
