@@ -21,7 +21,8 @@ export function initConsent(policyVersion, tagId, primaryBg, secondaryBg) {
 
   if (savedConsent === states.granted) {
     loadAnalytics(tagId);
-  } else if (savedConsent === states.unknown) {
+    return
+  } else if (!savedConsent || savedConsent === states.unknown) {
     createConsentBanner(primaryBg, secondaryBg);
 
     const acceptBtn = document.getElementById("acceptConsentBtn");
@@ -60,7 +61,7 @@ function getConsent(policyVersion) {
   if (!savedConsent || savedConsent.policyVersion !== policyVersion)
     return states.unknown;
 
-  if (savedConsent === states.granted || savedConsent === states.denied) {
+  if (savedConsent.choice === states.granted || savedConsent.choice === states.denied) {
     return savedConsent.choice;
   } else {
     return states.unknown;
