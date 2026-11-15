@@ -16,35 +16,84 @@ export function initConsent(policyVersion, tagId, primaryBg, secondaryBg) {
     throw new Error("Please give the policy version as the first parameter");
   if (!tagId)
     throw new Error("Please give your tracking id as the second parameter");
-
+  
   const savedConsent = getConsent(policyVersion);
+  
+  const cssStyles = document.createElement("style")
+  cssStyles.id = "consent-styles"
+  cssStyles.innerHTML = ` .consentCard {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  z-index: 1;
+          width: 300px;
+          border: 1px solid #222;
+          background: #111;
+          border-radius: 12px;
+          padding: 6px;
+        }
+        h2, p {
+          margin: 6px;
+        }
+        .consentCard button, .consent-settings {
+          margin: 4px;
+          padding: 8px 18px;
+          color: #ffffff;
+          border: none;
+          border-radius: 18px;
+          font-size: 16px;
+          cursor: pointer;
+        }
+          .consent-settings {
+          margin: 4px;
+          padding: 8px 18px;
+          color: #ffffff;
+          border: 1px solid #333;
+          border-radius: 18px;
+          font-size: 16px;
+          cursor: pointer;
+        }`;
 
+  document.head.append(cssStyles);
+  
+  if(savedConsent !== states.unknown) {
+    createSettingsButton(primaryBg);
+  }
+  
   if (savedConsent === states.granted) {
     loadAnalytics(tagId);
     return
   } else if (!savedConsent || savedConsent === states.unknown) {
     createConsentBanner(primaryBg, secondaryBg);
-
+    
     const acceptBtn = document.getElementById("acceptConsentBtn");
     const denyBtn = document.getElementById("denyConsentBtn");
 
     if (!acceptBtn)
       throw new Error(
-        "Accept button is not found in the DOM. Please make sure initConsent loads after the DOM",
-      );
-    if (!denyBtn)
-      throw new Error(
-        "Deny button is not found in the DOM. Please make sure initConsent loads after the DOM",
-      );
+    "Accept button is not found in the DOM. Please make sure initConsent loads after the DOM",
+  );
+  if (!denyBtn)
+    throw new Error(
+  "Deny button is not found in the DOM. Please make sure initConsent loads after the DOM",
+);
 
-    //ACCEPT OR DENY BUTTON CLICK HANDLER
-    acceptBtn.addEventListener("click", () => {
-      saveConsent(states.granted, policyVersion);
-      loadAnalytics(tagId);
+//ACCEPT OR DENY BUTTON CLICK HANDLER
+acceptBtn.addEventListener("click", () => {
+  saveConsent(states.granted, policyVersion);
+  loadAnalytics(tagId);
+  createSettingsButton(primaryBg);
     });
     denyBtn.addEventListener("click", () => {
       saveConsent(states.denied, policyVersion);
-    });
+        createSettingsButton(primaryBg);
+      });
+      
+      document.addEventListener("click", (e) => {
+const btn = e.target.closest(".consent-settings")
+btn?.addEventListener("click", () => resetConsent());
+      })
+
   }
 }
 
@@ -113,13 +162,16 @@ export function createConsentBanner(primaryColor, secondaryColor) {
 
   card.append(headingText, text, acceptBtn, denyBtn);
 
-
-  const cssLink = document.createElement("link")
-  cssLink.href = "https://abdulroqib123.github.io/consent-component/consent.css";
-  cssLink.rel = "stylesheet"
-
-  document.head.append(cssLink);
   document.body.append(card);
+}
+
+function createSettingsButton(primaryBg) {
+const btn = document.createElement("button")
+btn.type = "button"
+btn.style.background = primaryBg
+btn.classList.add("consent-settings")
+btn.textContent = "Consent settings"
+document.body.append(btn)
 }
 
 function loadAnalytics(tagId) {
