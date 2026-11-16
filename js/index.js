@@ -25,14 +25,14 @@ export function initConsent(policyVersion, tagId, primaryBg, secondaryBg) {
   position: fixed;
   bottom: 12px;
   right: 12px;
-  z-index: 1;
+  z-index: 9;
           width: 300px;
           border: 1px solid #222;
           background: #111;
           border-radius: 12px;
           padding: 6px;
         }
-        h2, p {
+        .consentCard h2, .consentCard p {
           margin: 6px;
         }
         .consentCard button, .consent-settings {
@@ -52,6 +52,9 @@ export function initConsent(policyVersion, tagId, primaryBg, secondaryBg) {
           border-radius: 18px;
           font-size: 16px;
           cursor: pointer;
+          position: fixed;
+          bottom: 12px;
+          right: 12px;
         }`;
 
   document.head.append(cssStyles);
@@ -88,11 +91,6 @@ acceptBtn.addEventListener("click", () => {
       saveConsent(states.denied, policyVersion);
         createSettingsButton(primaryBg);
       });
-      
-      document.addEventListener("click", (e) => {
-const btn = e.target.closest(".consent-settings")
-btn?.addEventListener("click", () => resetConsent());
-      })
 
   }
 }
@@ -172,6 +170,11 @@ btn.style.background = primaryBg
 btn.classList.add("consent-settings")
 btn.textContent = "Consent settings"
 document.body.append(btn)
+
+btn.addEventListener("click", () => {
+  resetConsent();
+  window.location.reload();
+})
 }
 
 function loadAnalytics(tagId) {
